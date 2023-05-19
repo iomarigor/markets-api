@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: example_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db_data:/var/lib/mysql
+  myapp:
+    image: docker.io/bitnami/laravel:10
+    ports:
+      - '8000:8000'
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: example_db
+      DB_USERNAME: user
+      DB_PASSWORD: password
+    volumes:
+      - './my-project:/app'
+    depends_on:
+      - db
+volumes:
+  db_data:
