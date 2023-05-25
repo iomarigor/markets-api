@@ -1,31 +1,30 @@
-version: '2'
-
+version: '3'
 services:
-  db:
-    image: mysql:8.0
-    ports:
-      - "3307:3306"
+  mysql:
+    image: mysql:latest
     restart: always
     environment:
-      MYSQL_DATABASE: example_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: markets_demo
+      MYSQL_DATABASE: markets_database
+      MYSQL_USER: markets_demo
+      MYSQL_PASSWORD: markets_demo
     volumes:
-      - db_data:/var/lib/mysql
-  myapp:
-    image: docker.io/bitnami/laravel:10
+      - mysql_data:/var/lib/mysql
     ports:
-      - '8000:8000'
-    environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: example_db
-      DB_USERNAME: user
-      DB_PASSWORD: password
+      - "3306:3306"
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 80:80
     volumes:
-      - './my-project:/app'
+      - ./markets_api:/var/www/html
     depends_on:
-      - db
+      - mysql
+    links:
+      - mysql
+
 volumes:
-  db_data:
+  mysql_data:
