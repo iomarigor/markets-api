@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return 'MARKER-API';
 });
-Route::resource('/users', UserController::class);
-Route::post('register', 'App\Http\Controllers\UserController@register');
-Route::post('login', 'App\Http\Controllers\UserController@authenticate');
+
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', 'App\Http\Controllers\Auth\AuthController@authenticate');
+Route::middleware('jwt.verify')->group(function () {
+    Route::resource('/users', UserController::class);
+});

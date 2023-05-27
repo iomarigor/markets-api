@@ -11,7 +11,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
   php:
     build:
       context: .
@@ -21,6 +21,9 @@ services:
       - 80:80
     volumes:
       - ./markets_api:/var/www/html
+      - ./markets_api/public:/var/www/html/public
+      - ./markets_api/public/.htaccess:/var/www/html/public/.htaccess      
+      - ./markets_api/laravel.conf:/etc/apache2/sites-available/000-default.conf
     depends_on:
       - mysql
     links:
