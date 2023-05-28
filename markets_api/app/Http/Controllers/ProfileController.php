@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use ErrorException;
 
 /**
  * Class ProfileController
@@ -14,9 +15,19 @@ class ProfileController extends Controller
 
     public function index()
     {
-        $profiles = Profile::get();
+        try {
+            $profiles = Profile::get();
 
-        return json_encode($profiles);
+            return response()->json([
+                'msg' => "Perfiles listados",
+                'data' => $profiles
+            ], 200);
+        } catch (ErrorException $e) {
+            return response()->json([
+                'msg' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
     }
 
     /**
@@ -29,18 +40,17 @@ class ProfileController extends Controller
     {
         request()->validate(Profile::$rules);
 
-        try{
+        try {
             $profile = Profile::create($request->all());
             return response()->json([
                 'msg' => $profile,
-                'data' =>[]
-            ],200);
-
-        }catch(ErrorException $e){
+                'data' => []
+            ], 200);
+        } catch (ErrorException $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
-                'data' =>[]
-            ],400);
+                'data' => []
+            ], 400);
         }
     }
 
@@ -52,21 +62,21 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        try{
-        $profile = Profile::find($id);
-        return response()->json([
-            'msg' => 'Lista de perfiles',
-            'data' => $profile
-        ],200);
-        }catch(ErrorException $e){
+        try {
+            $profile = Profile::find($id);
+            return response()->json([
+                'msg' => 'Lista de perfiles',
+                'data' => $profile
+            ], 200);
+        } catch (ErrorException $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
-                'data' =>[]
-            ],400);
+                'data' => []
+            ], 400);
         }
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -80,16 +90,16 @@ class ProfileController extends Controller
         request()->validate(Profile::$rules);
 
         $profile->update($request->all());
-        try{
-        return response()->json([
-            'msg' => 'Perfil editado',
-            'data' => request()->all
-        ],200);
-        }catch(ErrorException $e){
+        try {
+            return response()->json([
+                'msg' => 'Perfil editado',
+                'data' => request()->all
+            ], 200);
+        } catch (ErrorException $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
-                'data' =>[]
-            ],400);
+                'data' => []
+            ], 400);
         }
     }
 
@@ -101,16 +111,16 @@ class ProfileController extends Controller
     public function destroy($id)
     {
         $profile = Profile::find($id)->delete();
-        try{
+        try {
             return response()->json([
                 'msg' => 'Perfil elimninado',
                 'data' => $profile
-            ],200);
-        }catch(ErrorException $e){
+            ], 200);
+        } catch (ErrorException $e) {
             return response()->json([
                 'msg' => $e->getMessage(),
-                'data' =>[]
-            ],400);
+                'data' => []
+            ], 400);
         }
     }
 }

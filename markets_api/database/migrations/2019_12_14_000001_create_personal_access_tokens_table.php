@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSpeedsTable extends Migration
+class CreatePersonalAccessTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateSpeedsTable extends Migration
      */
     public function up()
     {
-        Schema::create('speeds', function (Blueprint $table) {
+        Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('description');
-            $table->string('url');
-            $table->string('url_icon');
-            $table->rememberToken();
+            $table->morphs('tokenable');
+            $table->string('name');
+            $table->string('token', 64)->unique();
+            $table->text('abilities')->nullable();
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateSpeedsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('speeds');
+        Schema::dropIfExists('personal_access_tokens');
     }
 }

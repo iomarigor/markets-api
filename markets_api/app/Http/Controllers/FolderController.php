@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Folder;
 use Illuminate\Http\Request;
+use ErrorException;
 
 /**
  * Class FolderController
@@ -62,7 +63,7 @@ class FolderController extends Controller
      */
     public function store(Request $request)
     {
-    
+
         request()->validate(Folder::$rules);
         try {
             $folder = Folder::create($request->all());
@@ -86,7 +87,7 @@ class FolderController extends Controller
      */
     public function show($id)
     {
-       
+
         try {
             $folder = Folder::find($id);
 
@@ -100,7 +101,6 @@ class FolderController extends Controller
                 'data' => []
             ], 400);
         }
-        
     }
 
     /**
@@ -109,7 +109,7 @@ class FolderController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-   /*  public function edit($id)
+    /*  public function edit($id)
     {
         $folder = Folder::find($id);
 
@@ -150,7 +150,7 @@ class FolderController extends Controller
      */
     public function destroy($id)
     {
-       
+
         try {
             $folder = Folder::find($id)->delete();
 

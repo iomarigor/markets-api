@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Marker;
 use Illuminate\Http\Request;
+use ErrorException;
+
 /**
  * Class MarkerController
  * @package App\Http\Controllers
@@ -16,11 +19,19 @@ class MarkerController extends Controller
      */
     public function index()
     {
-        $markers = Marker::get();
+        try {
+            $markers = Marker::get();
 
-        /*return view('marker.index', compact('markers'))
-            ->with('i', (request()->input('page', 1) - 1) * $markers->perPage());*/
-        return json_encode($markers);
+            return response()->json([
+                'msg' => 'Lista de marcadores',
+                'data' => $markers
+            ], 200);
+        } catch (ErrorException $e) {
+            return response()->json([
+                'msg' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
     }
     /**
      * Store a newly created resource in storage.
@@ -51,20 +62,19 @@ class MarkerController extends Controller
         }
     }
     public function show($id)
-    {   
-        try{
-        $marker = Marker::find($id);
-        return response()->json([
-            'mkr' => 'lista de marcadores',
-            'data' => $marker
-            ],250);
-            }catch(\Exception $e){
-                return response()->json([
-                    'mkr' => $e->getMessage(),
-                    'data' => []
-                ],450);
-                }  
-        
+    {
+        try {
+            $marker = Marker::find($id);
+            return response()->json([
+                'msg' => 'lista de marcadores',
+                'data' => $marker
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
     }
 
     /**
@@ -75,11 +85,18 @@ class MarkerController extends Controller
      */
     public function edit($id)
     {
-        $marker = Marker::find($id);
-        return response()->json([
-            'mkr' => 'marcador editado',
-            'data' => $marker
-            ],250);
+        try {
+            $marker = Marker::find($id);
+            return response()->json([
+                'msg' => 'marcador editado',
+                'data' => $marker
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => $e->getMessage(),
+                'data' => []
+            ], 400);
+        }
     }
 
     /**
@@ -90,20 +107,20 @@ class MarkerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Marker $marker)
-    {   
-        try{
-        request()->validate(Marker::$rules);
-        $marker->update($request->all());
-        return response()->json([
-            'mkr' => 'marcador actualizado',
-            'data' => $request ->all ()
-            ],250);
-            } catch(\Exception $e){
+    {
+        try {
+            request()->validate(Marker::$rules);
+            $marker->update($request->all());
             return response()->json([
-                'mkr' => $e->getMessage(),
+                'msg' => 'marcador actualizado',
+                'data' => $request->all()
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => $e->getMessage(),
                 'data' => []
-            ],450);
-            }  
+            ], 400);
+        }
     }
 
     /**
@@ -112,19 +129,19 @@ class MarkerController extends Controller
      * @throws \Exception
      */
     public function destroy($id)
-    {   
-        try{
-        $marker = Marker::find($id)->delete();
+    {
+        try {
+            $marker = Marker::find($id)->delete();
 
-        return response()->json([
-            'mkr' => 'marcador eliminado con exito',
-            'data' => $marker
-            ],250);
-        }catch(\Exception $e){
             return response()->json([
-                'mkr' => $e->getMessage(),
+                'msg' => 'marcador eliminado con exito',
+                'data' => $marker
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => $e->getMessage(),
                 'data' => []
-            ],450);
-            }  
+            ], 400);
+        }
     }
 }
