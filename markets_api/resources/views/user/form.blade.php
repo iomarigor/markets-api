@@ -2,14 +2,14 @@
     <div class="box-body">
         
         <div class="form-group">
+            {{ Form::label('name') }}
+            {{ Form::text('name', $user->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name']) }}
+            {!! $errors->first('name', '<div class="invalid-feedback">:message</div>') !!}
+        </div>
+        <div class="form-group">
             {{ Form::label('email') }}
             {{ Form::text('email', $user->email, ['class' => 'form-control' . ($errors->has('email') ? ' is-invalid' : ''), 'placeholder' => 'Email']) }}
             {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
-        <div class="form-group">
-            {{ Form::label('token') }}
-            {{ Form::text('token', $user->token, ['class' => 'form-control' . ($errors->has('token') ? ' is-invalid' : ''), 'placeholder' => 'Token']) }}
-            {!! $errors->first('token', '<div class="invalid-feedback">:message</div>') !!}
         </div>
 
     </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::get('/', function () {
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'authenticate']);
-Route::middleware('jwt.verify')->group(function () {
+
+/*Route::middleware('jwt.verify')->group(function () {
     Route::resource('/users', UserController::class);
-});
+});*/
+
+Route::resource('profile', ProfileController::class);

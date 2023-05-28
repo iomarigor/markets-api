@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Error;
-use ErrorException;
 use Illuminate\Http\Request;
 
 /**
@@ -20,19 +18,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        try {
-            $user = User::get();
+        $users = User::paginate();
 
-            return response()->json([
-                'msg' => 'Lista de usuarios',
-                'data' => $user
-            ], 200);
-        } catch (ErrorException $e) {
-            return response()->json([
-                'msg' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
+        return view('user.index', compact('users'))
+            ->with('i', (request()->input('page', 1) - 1) * $users->perPage());
     }
 
     /**
@@ -42,18 +31,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        try {
-            $user = new User();
-            return response()->json([
-                'msg' => $user,
-                'data' => []
-            ], 200);
-        } catch (ErrorException $e) {
-            return response()->json([
-                'msg' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
+        $user = new User();
+        return view('user.create', compact('user'));
     }
 
     /**
@@ -65,18 +44,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         request()->validate(User::$rules);
-        try {
-            $user = User::create($request->all());
-            return response()->json([
-                'msg' => $user,
-                'data' => []
-            ], 200);
-        } catch (ErrorException $e) {
-            return response()->json([
-                'msg' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
+
+        $user = User::create($request->all());
+
+        return redirect()->route('users.index')
+            ->with('success', 'User created successfully.');
     }
 
     /**
@@ -87,20 +59,24 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        try {
-            $user = User::find($id);
+        $user = User::find($id);
 
-            return response()->json([
-                'msg' => 'Lista de usuarios',
-                'data' => $user
-            ], 200);
-        } catch (ErrorException $e) {
-            return response()->json([
-                'msg' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
+        return view('user.show', compact('user'));
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $user = User::find($id);
+
+        return view('user.edit', compact('user'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -110,21 +86,12 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        try {
-            request()->validate(User::$rules);
+        request()->validate(User::$rules);
 
-            $user->update($request->all());
+        $user->update($request->all());
 
-            return response()->json([
-                'msg' => 'Usuario editado',
-                'data' => $request->all()
-            ], 200);
-        } catch (ErrorException $e) {
-            return response()->json([
-                'msg' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
+        return redirect()->route('users.index')
+            ->with('success', 'User updated successfully');
     }
 
     /**
@@ -134,18 +101,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $user = User::find($id)->delete();
+        $user = User::find($id)->delete();
 
-            return response()->json([
-                'msg' => 'Usuario eliminado',
-                'data' => $user
-            ], 200);
-        } catch (ErrorException $e) {
-            return response()->json([
-                'msg' => $e->getMessage(),
-                'data' => []
-            ], 400);
-        }
+        return redirect()->route('users.index')
+            ->with('success', 'User deleted successfully');
     }
 }
