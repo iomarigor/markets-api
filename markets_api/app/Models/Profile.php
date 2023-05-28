@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class User
+ * Class Profile
  *
  * @property $id
+ * @property $id_user
+ * @property $profile
  * @property $name
- * @property $email
- * @property $email_verified_at
- * @property $password
  * @property $remember_token
  * @property $created_at
  * @property $updated_at
@@ -19,12 +18,13 @@ use Illuminate\Database\Eloquent\Model;
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class User extends Model
+class Profile extends Model
 {
     
     static $rules = [
+		'id_user' => 'required',
+		'profile' => 'required',
 		'name' => 'required',
-		'email' => 'required',
     ];
 
     protected $perPage = 20;
@@ -34,7 +34,7 @@ class User extends Model
      *
      * @var array
      */
-    protected $fillable = ['name','email'];
+    protected $fillable = ['id_user','profile','name'];
 
 
 

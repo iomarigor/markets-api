@@ -26,7 +26,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json(['msg' => $validator->errors()->toJson(), 'data' => []], 400);
         }
 
         $user = User::create([
@@ -59,7 +59,7 @@ class AuthController extends Controller
                 'data' => []
             ], 500);
         }
-        return response()->json(compact('token'));
+        return response()->json(['msg' => 'Login user', 'data' => [compact('token')]]);
     }
 
     public function getAuthenticatedUser()
@@ -75,17 +75,17 @@ class AuthController extends Controller
             return response()->json([
                 'msg' => 'Token expired',
                 'data' => []
-            ], $e->getStatusCode());
+            ], 401);
         } catch (TokenInvalidException $e) {
             return response()->json([
                 'msg' => 'Token invalid',
                 'data' => []
-            ], $e->getStatusCode());
+            ], 401);
         } catch (JWTException $e) {
             return response()->json([
                 'msg' => 'Tokan absent',
                 'data' => []
-            ], $e->getStatusCode());
+            ], 401);
         }
         return response()->json(compact('user'));
     }
